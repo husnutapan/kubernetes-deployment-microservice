@@ -1,0 +1,38 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: employee
+  labels:
+    app: employee
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: employee
+  template:
+    metadata:
+      labels:
+        app: employee
+    spec:
+      containers:
+        - name: employee
+          image: husnutapan1994/employee-service:1.2
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 8080
+          env:
+              - name: POSTGRES_USER
+                valueFrom:
+                  secretKeyRef:
+                    name: postgres
+                    key: postgresql-user
+              - name: POSTGRES_PASSWORD
+                valueFrom:
+                  secretKeyRef:
+                    name: postgres
+                    key: postgresql-password
+              - name: POSTGRES_DB
+                valueFrom:
+                  configMapKeyRef:
+                    name: postgres
+                    key: database-name
